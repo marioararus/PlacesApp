@@ -1,14 +1,13 @@
 package marioara.rus.placesapp.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -18,18 +17,20 @@ import marioara.rus.placesapp.R
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
+
     private lateinit var mMap: GoogleMap
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var mMapsViewModel: MapsViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        mMapsViewModel = ViewModelProviders.of(this).get(MapsViewModel::class.java)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     /**
@@ -45,34 +46,38 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.isMyLocationEnabled = true
 
+        // Check if the permissions are granted
         if (ActivityCompat.checkSelfPermission(this@MapsActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this@MapsActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this@MapsActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            return;
+
+            // if they are not granted, request them
+            ActivityCompat.requestPermissions(this@MapsActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         } else {
+            // get the current location
             getCurrentLocation()
         }
 
     }
 
-    @SuppressLint("MissingPermission")
-    fun getCurrentLocation() {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            Toast.makeText(this, "marioara", Toast.LENGTH_LONG).show()
-            val currentUserLocationLatLng = LatLng(location.latitude, location.longitude)
-            mMap.moveCamera((CameraUpdateFactory.newLatLngZoom(currentUserLocationLatLng, 5f)))
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 1) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // if the user granted the permission, get location
                 getCurrentLocation()
             } else {
                 Toast.makeText(this, "We cannot show your location", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    /**
+     * Get the user's longitude and latitude
+     * Focus the camera on the user's location on the map
+     */
+    private fun getCurrentLocation() {
+        mMapsViewModel.currentLocation.observe(this, Observer {
+            val currentUserLocationLatLng = LatLng(it.latitude, it.longitude)
+            mMap.moveCamera((CameraUpdateFactory.newLatLngZoom(currentUserLocationLatLng, 10f)))
+        })
     }
 }
