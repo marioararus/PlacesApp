@@ -50,8 +50,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlaceViewH
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mOnPlaceClickListener != null){
-                    mOnPlaceClickListener.onPlaceClick(place.getId());
+                if (mOnPlaceClickListener != null) {
+                    mOnPlaceClickListener.onPlaceClick(place.getPlaceId());
                 }
             }
         });
@@ -62,11 +62,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlaceViewH
         return places.size();
     }
 
-    public interface OnPlaceClickListener{
+    public interface OnPlaceClickListener {
         public void onPlaceClick(String id);
     }
 
-    public void setOnPlaceClickListener(OnPlaceClickListener onPlaceClickListener){
+    public void setOnPlaceClickListener(OnPlaceClickListener onPlaceClickListener) {
         mOnPlaceClickListener = onPlaceClickListener;
     }
 

@@ -33,8 +33,8 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitivty_place_details);
-        ivPlace = findViewById(R.id.iv_place_image);
+        setContentView(R.layout.activity_place_details);
+        ivPlace = findViewById(R.id.iv_place_details);
         tvPlaceName = findViewById(R.id.tv_place_name);
         tvPlaceAddress = findViewById(R.id.tv_place_address);
         tvError = findViewById(R.id.tv_error);
@@ -44,12 +44,14 @@ public class PlaceDetailsActivity extends AppCompatActivity {
             mPlaceDetailsViewModel.getPlaceDetails(getIntent().getStringExtra(PLACE_ID_KEY)).observe(this, new Observer<PlaceDetailsStatus>() {
                 @Override
                 public void onChanged(PlaceDetailsStatus placeDetailsStatus) {
-                    if(placeDetailsStatus.getPlaceDetails() != null){
+                    if (placeDetailsStatus.getPlaceDetails() != null) {
                         PlaceDetails placeDetails = placeDetailsStatus.getPlaceDetails();
                         tvPlaceName.setText(placeDetails.getName());
                         tvPlaceAddress.setText(placeDetails.getAddress());
-                        Glide.with(PlaceDetailsActivity.this).load(placeDetails.getPhotoUrl()).into(ivPlace);
-                    } else if(placeDetailsStatus.getErrorMessage() != null){
+                        if (placeDetails.getPhotos() != null && !placeDetails.getPhotos().isEmpty()) {
+                            Glide.with(PlaceDetailsActivity.this).load(placeDetails.getPhotos().get(0)).into(ivPlace);
+                        }
+                    } else if (placeDetailsStatus.getErrorMessage() != null) {
                         tvError.setText(placeDetailsStatus.getErrorMessage());
                     }
                 }

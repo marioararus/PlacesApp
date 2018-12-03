@@ -28,7 +28,7 @@ object RemotePlacesModel : RemoteModel() {
             val place = RemoteEntitiesParser.remotePlaceDetailsToPlaceDetails(serverResponse.result)
             PlaceDetailsStatus(place, null)
         } else {
-            Log.e("getAllPlacesNearby", "${serverResponse.error_message}")
+            Log.e("getPlaceDetails", "${serverResponse.error_message}")
             PlaceDetailsStatus(null, serverResponse.error_message)
         }
     }

@@ -2,7 +2,6 @@ package marioara.rus.placesapp.ui.place;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import marioara.rus.placesapp.data.entity.PlaceDetails;
 import marioara.rus.placesapp.data.entity.PlaceDetailsStatus;
 import marioara.rus.placesapp.domain.PlacesRepository;
 

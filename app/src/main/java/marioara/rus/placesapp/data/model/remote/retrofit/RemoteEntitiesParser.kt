@@ -15,9 +15,7 @@ object RemoteEntitiesParser {
      */
     fun remotePlaceDetailsToPlaceDetails(remotePlaceDetails: RemotePlaceDetails?) =
             remotePlaceDetails?.run {
-                PlaceDetails(formatted_address, place_id, name,
-                        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$reference&key=AIzaSyB3D9i2ToxdUihNTIRK-yCwSkGZe35NEr8"
-                )
+                PlaceDetails(formatted_address, place_id, name, remotePhotosToPhotos(photos))
             }
 
     /**
@@ -28,8 +26,8 @@ object RemoteEntitiesParser {
     fun remotePlaceToPlace(remotePlace: RemotePlace) =
             remotePlace.run {
                 Place(remoteGeometryToGeometry(geometry), icon, id, name,
-                        remoteOpeningHoursToOpeningHours(openingHours),
-                        remotePhotosToPhotos(photos), placeId, scope, reference, types, vicinity)
+                        remoteOpeningHoursToOpeningHours(opening_hours),
+                        remotePhotosToPhotos(photos), place_id, scope, reference, types, vicinity)
             }
 
     /**
