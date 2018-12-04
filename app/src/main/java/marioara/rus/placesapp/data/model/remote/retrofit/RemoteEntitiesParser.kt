@@ -13,9 +13,9 @@ object RemoteEntitiesParser {
      * @param remotePlace a place that comes from the server
      * @return a converted place
      */
-    fun remotePlaceDetailsToPlaceDetails(remotePlaceDetails: RemotePlaceDetails?) =
+    fun remotePlaceDetailsToPlaceDetails(remotePlaceDetails: RemotePlaceDetails?, apiKey: String) =
             remotePlaceDetails?.run {
-                PlaceDetails(formatted_address, place_id, name, remotePhotosToPhotos(photos))
+                PlaceDetails(formatted_address, place_id, name, remotePhotosToPhotos(photos, apiKey))
             }
 
     /**
@@ -23,11 +23,11 @@ object RemoteEntitiesParser {
      * @param remotePlace a place that comes from the server
      * @return a converted place
      */
-    fun remotePlaceToPlace(remotePlace: RemotePlace) =
+    fun remotePlaceToPlace(remotePlace: RemotePlace, apiKey: String) =
             remotePlace.run {
                 Place(remoteGeometryToGeometry(geometry), icon, id, name,
                         remoteOpeningHoursToOpeningHours(opening_hours),
-                        remotePhotosToPhotos(photos), place_id, scope, reference, types, vicinity)
+                        remotePhotosToPhotos(photos, apiKey), place_id, scope, reference, types, vicinity)
             }
 
     /**
@@ -35,9 +35,9 @@ object RemoteEntitiesParser {
      * @param remotePlace a place that comes from the server
      * @return a converted place
      */
-    fun remotePlacesToPlaces(remotePlacesList: List<RemotePlace>?) =
+    fun remotePlacesToPlaces(remotePlacesList: List<RemotePlace>?, apiKey: String) =
             remotePlacesList?.map {
-                remotePlaceToPlace(it)
+                remotePlaceToPlace(it, apiKey)
             }
 
     /**
@@ -46,9 +46,9 @@ object RemoteEntitiesParser {
      * @return a converted list of photos
      */
 
-    fun remotePhotosToPhotos(remotePhotos: List<RemotePhoto>?) =
+    fun remotePhotosToPhotos(remotePhotos: List<RemotePhoto>?, apiKey: String) =
             remotePhotos?.map {
-                remotePhotoToPhoto(it)
+                remotePhotoToPhoto(it, apiKey)
             }
 
     /**
@@ -56,9 +56,9 @@ object RemoteEntitiesParser {
      * @param remotePhoto a photo that comes from the server
      * @return a converted photo
      */
-    fun remotePhotoToPhoto(remotePhoto: RemotePhoto) =
+    fun remotePhotoToPhoto(remotePhoto: RemotePhoto, apiKey: String) =
             remotePhoto.run {
-                "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photo_reference&key=AIzaSyB3D9i2ToxdUihNTIRK-yCwSkGZe35NEr8"
+                "${RemoteModel.URL_PATH}place/photo?maxwidth=400&photoreference=$photo_reference&key=$apiKey"
             }
 
     /**

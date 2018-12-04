@@ -7,14 +7,14 @@ import marioara.rus.placesapp.data.entity.PlacesStatus
 import marioara.rus.placesapp.data.model.remote.retrofit.RemoteEntitiesParser
 import marioara.rus.placesapp.data.model.remote.retrofit.RemoteModel
 
-object RemotePlacesModel : RemoteModel() {
+class RemotePlacesModel(private val apiKey: String) : RemoteModel() {
 
     private val placesService: PlacesService = retrofit.create(PlacesService::class.java)
 
     suspend fun getAllPlacesNearby(location: Location): PlacesStatus? {
-        val serverResponse = placesService.getPlacesDetails("${location.lat}, ${location.lng}").await()
+        val serverResponse = placesService.getPlacesDetails("${location.lat}, ${location.lng}", apiKey).await()
         return if (serverResponse.status == "OK") {
-            val places = RemoteEntitiesParser.remotePlacesToPlaces(serverResponse.results)
+            val places = RemoteEntitiesParser.remotePlacesToPlaces(serverResponse.results, apiKey)
             PlacesStatus(places, null)
         } else {
             Log.e("getAllPlacesNearby", "${serverResponse.error_message}")
@@ -23,9 +23,9 @@ object RemotePlacesModel : RemoteModel() {
     }
 
     suspend fun getPlaceDetails(placeId: String): PlaceDetailsStatus? {
-        val serverResponse = placesService.getPlaceDetails(placeId).await()
+        val serverResponse = placesService.getPlaceDetails(placeId, apiKey).await()
         return if (serverResponse.status == "OK") {
-            val place = RemoteEntitiesParser.remotePlaceDetailsToPlaceDetails(serverResponse.result)
+            val place = RemoteEntitiesParser.remotePlaceDetailsToPlaceDetails(serverResponse.result, apiKey)
             PlaceDetailsStatus(place, null)
         } else {
             Log.e("getPlaceDetails", "${serverResponse.error_message}")

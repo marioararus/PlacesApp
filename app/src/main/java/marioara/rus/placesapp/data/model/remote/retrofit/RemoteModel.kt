@@ -5,9 +5,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-abstract class RemoteModel{
+abstract class RemoteModel {
     protected val retrofit: Retrofit
-    protected val URL_PATH = "https://maps.googleapis.com/maps/api/"
+
+    companion object {
+        val URL_PATH = "https://maps.googleapis.com/maps/api/"
+    }
 
     init {
         retrofit = Retrofit.Builder()

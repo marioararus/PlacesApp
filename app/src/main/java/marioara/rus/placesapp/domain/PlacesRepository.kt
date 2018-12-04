@@ -10,13 +10,14 @@ import marioara.rus.placesapp.data.entity.PlacesStatus
 import marioara.rus.placesapp.data.model.remote.retrofit.place.RemotePlacesModel
 
 
-class PlacesRepository() {
+class PlacesRepository(apiKey: String) {
+    private val remotePlacesModel = RemotePlacesModel(apiKey)
     private val mListLiveData: MutableLiveData<PlacesStatus> = MutableLiveData()
     private val mPlaceDetailsDetailsLiveData: MutableLiveData<PlaceDetailsStatus> = MutableLiveData()
 
     fun getPlaces(lat: Double, lng: Double): LiveData<PlacesStatus>? {
         GlobalScope.launch {
-            val placeStatus = RemotePlacesModel.getAllPlacesNearby(Location(lat, lng))
+            val placeStatus = remotePlacesModel.getAllPlacesNearby(Location(lat, lng))
 
             // Return all the remote clinics
             mListLiveData.postValue(placeStatus)
@@ -26,7 +27,7 @@ class PlacesRepository() {
 
     fun getPlaceDetails(placeId: String): LiveData<PlaceDetailsStatus>? {
         GlobalScope.launch {
-            val placeStatus = RemotePlacesModel.getPlaceDetails(placeId)
+            val placeStatus = remotePlacesModel.getPlaceDetails(placeId)
 
             // Return all the remote clinics
             mPlaceDetailsDetailsLiveData.postValue(placeStatus)

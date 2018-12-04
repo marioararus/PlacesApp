@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import marioara.rus.placesapp.R;
 import marioara.rus.placesapp.data.entity.PlacesStatus;
 import marioara.rus.placesapp.data.model.remote.RemoteLocationModel;
 import marioara.rus.placesapp.domain.PlacesRepository;
@@ -26,7 +27,7 @@ public class MapsViewModel extends AndroidViewModel {
     public MapsViewModel(@NonNull Application application) {
         super(application);
         mMutableLiveData = new MutableLiveData<>();
-        mPlacesRepository = new PlacesRepository();
+        mPlacesRepository = new PlacesRepository(application.getString(R.string.google_maps_key));
     }
 
     /**
